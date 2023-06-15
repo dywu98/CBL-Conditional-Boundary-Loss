@@ -10,9 +10,17 @@ Thus, it may seems not convinient to reproduce our method right now. But, you wi
 More results of other models like Swin-B and PSP, together with the trained model weights file, will be updated soon once we finished the orgnization of our project.  
 Temporary result table:  
 
+### Cityscapes
 | model       | Backbone    | iter    | Crop Size    | mIoU MMseg (single scale) | mIoU +CBL Ours (single scale)  |
 | ----------- | ----------- | ------- |  ----------- | ------------------------- | ------------------------------ |    
 | OCRNet      | HRNetW48    | 80K     | 512x1024     | 80.70                     | 81.95                          |
+### ADE20K
+| model             | Backbone  | mIoU(SS) | mIoU(MS)        |
+| -----------       | --------- | -------- | --------        |
+| MaskFormer        | Swin-B    | --       | 53.83(official) |
+| MaskFormer +CBL   | Swin-B    | 53.49    | 54.89           | 
+| Mask2Former       | Swin-B    | --       | 55.07(official) |
+| Mask2Former +CBL  | Swin-B    | 54.79    | 56.05           | 
 
 ## How to use our code in MMsegmentation
 We follow the implementation of MMsegmentation. Here we provide the code of CBL based on the OCRHead in CBLocr_head.py.  
@@ -35,6 +43,9 @@ The class name of the OCRHead with our CBL is `New_ER5OCRHead`.
 4. Using our config.py to train a OCRNet.  
   For example, to train a OCRNet-HRNetW48 on cityscapes, please run the following code:  
   `sh tools/dist_train.sh YOUR_PATH_TO_THE_CONFIG/erocrnet_hr48_512x1024_80k_cityscapes_fp16.py 8`  
+
+## How to train MaskFormer +CBL model
+We build our implementation based on the official code base of MaskFormer. Please refer to [maskformer](./maskformer/)
 
 ## TO-DO List(after accepted)
 1.Upload the whole CBL project based on MMsegmentation (including CBL trained models with PSPNet, DeeplabV3+, Swin-B)  
