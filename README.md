@@ -1,5 +1,5 @@
 # CBL-Conditional-Boundary-Loss
-The official implementation of IEEE-TIP paper under review.  
+The official implementation of the accepted IEEE-TIP paper "Conditional Boundary Loss for Semantic Segmentation".  
 Please note that right now this project is only the simple one **only including the core code** of our CBL implementation.  
 The whole implementations that are easy to use based on MMsegmentation will be released soon after the accpectance of our paper.   
 However, you can still use our CBL in MMsegmentation following our instructions.  
