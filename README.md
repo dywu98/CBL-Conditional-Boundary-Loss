@@ -22,6 +22,11 @@ Temporary result table:
 | Mask2Former       | Swin-B    | --       | 55.07(official) |
 | Mask2Former +CBL  | Swin-B    | 54.79    | 56.05           | 
 
+## How to train MaskFormer +CBL model
+We build our implementation based on the official code base of MaskFormer. Please refer to [maskformer](./maskformer/)
+This implementation enables easy reproduction of our CBL on MaskFormer, **which do not need the above complicated steps for mmsegmentation**.
+The trained MaskFormer+CBL model can also be found at [MaskFormer+CBL Trained Model Code:CBL0](https://pan.baidu.com/s/1vSP6DYBOs82O490RFQF1GQ?pwd=CBL0)
+
 ## How to use our code in MMsegmentation
 We follow the implementation of MMsegmentation. Here we provide the code of CBL based on the OCRHead in CBLocr_head.py.  
 The class name of the OCRHead with our CBL is `New_ER5OCRHead`.   
@@ -43,11 +48,6 @@ The class name of the OCRHead with our CBL is `New_ER5OCRHead`.
 4. Using our config.py to train a OCRNet.  
   For example, to train a OCRNet-HRNetW48 on cityscapes, please run the following code:  
   `sh tools/dist_train.sh YOUR_PATH_TO_THE_CONFIG/erocrnet_hr48_512x1024_80k_cityscapes_fp16.py 8`  
-
-## How to train MaskFormer +CBL model
-We build our implementation based on the official code base of MaskFormer. Please refer to [maskformer](./maskformer/)
-This implementation enables easy reproduction of our CBL on MaskFormer, **which do not need the above complicated steps for mmsegmentation**.
-The trained MaskFormer+CBL model can also be found at [MaskFormer+CBL Trained Model Code:CBL0](https://pan.baidu.com/s/1vSP6DYBOs82O490RFQF1GQ?pwd=CBL0)
 
 ## TO-DO List(after accepted)
 1.Upload the whole CBL project based on MMsegmentation (including CBL trained models with PSPNet, DeeplabV3+, Swin-B)  
