@@ -46,6 +46,8 @@ The class name of the OCRHead with our CBL is `New_ER5OCRHead`.
 
 ## How to train MaskFormer +CBL model
 We build our implementation based on the official code base of MaskFormer. Please refer to [maskformer](./maskformer/)
+This implementation enables easy reproduction of our CBL on MaskFormer, **which do not need the above complicated steps for mmsegmentation**.
+The trained MaskFormer+CBL model can also be found at [MaskFormer+CBL Trained Model Code:CBL0](https://pan.baidu.com/s/1vSP6DYBOs82O490RFQF1GQ?pwd=CBL0)
 
 ## TO-DO List(after accepted)
 1.Upload the whole CBL project based on MMsegmentation (including CBL trained models with PSPNet, DeeplabV3+, Swin-B)  
