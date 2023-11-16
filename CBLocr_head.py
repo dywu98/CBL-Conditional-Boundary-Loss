@@ -134,9 +134,8 @@ class OCRHead(BaseCascadeDecodeHead):
 
 @HEADS.register_module()
 class New_ER5OCRHead(BaseCascadeDecodeHead):
-    """Object-Contextual Representations for Semantic Segmentation.
-
-    This head is the implementation of `OCRNet
+    """
+    This head is the implementation of our Conditional Boudnary Loss + `OCRNet
     <https://arxiv.org/abs/1909.11065>`_.
 
     Args:
@@ -244,8 +243,10 @@ class New_ER5OCRHead(BaseCascadeDecodeHead):
         context_loss_final = torch.tensor(0.0, device=er_input.device)
         context_loss = torch.tensor(0.0, device=er_input.device)
         # 获取参与运算的边缘像素mask gt_b (B,1,H,W)
+        # get the ground truth mask of boundary pixels for CBL calculation 
         gt_b = gt_boundary_seg
         # 将ignore的像素置零，现在gt_b里面的0表示不参与loss计算
+        # set all ignored pixels as 0 in the boundary pixel mask
         gt_b[gt_b==255]=0
         seg_label_copy = seg_label.clone()
         seg_label_copy[seg_label_copy==255]=0
@@ -289,12 +290,16 @@ class New_ER5OCRHead(BaseCascadeDecodeHead):
         seg_label = F.interpolate(seg_label.float(), size=er_input.shape[2:], mode='nearest').long()
         gt_boundary_seg = F.interpolate(gt_boundary_seg.unsqueeze(1).float(), size=er_input.shape[2:], mode='nearest').long()
         # 获取参与运算的边缘像素mask gt_b (B,1,H,W)
+        # get the ground truth mask of boundary pixels for CBL calculation 
         gt_b = gt_boundary_seg
         # 将ignore的像素置零，现在gt_b里面的0表示不参与loss计算
+        # set all ignored pixels as 0 in the boundary pixel mask
         gt_b[gt_b==255]=0
         edge_mask = gt_b.squeeze(1)
         # 下面按照每个出现的类计算每个类的er loss
+        # calculate er loss in a class-wise manner, only for those that have showned in this batch
         # 首先提取出每个类各自的boundary
+        # get the boundary pixels of each class
         seg_label_one_hot = F.one_hot(seg_label.squeeze(1), num_classes=256)[:,:,:,0:self.num_classes].permute(0,3,1,2)
         if self.same_class_extractor_weight.device!=er_input.device: 
             self.same_class_extractor_weight = self.same_class_extractor_weight.to(er_input.device)
@@ -320,9 +325,11 @@ class New_ER5OCRHead(BaseCascadeDecodeHead):
             now_pred_class_mask = pred_label_one_hot[:,shown_class[i],:,:]
             # er_input 乘当前类的mask，就把所有不是当前类的像素置为0了
             # 得到的now_neighbor_feat是只有当前类的特征
+            # get the pixel feature of only the current class
             now_neighbor_feat = same_class_extractor(er_input*now_class_mask.unsqueeze(1))
             now_correct_neighbor_feat = same_class_extractor(er_input*(now_class_mask*now_pred_class_mask).unsqueeze(1))
             # 下面是获得当前类的每个像素邻居中同属当前点的像素个数
+            # count the number of each pixel's neighbor belongs to the same class
             now_class_num_in_neigh = same_class_number_extractor(now_class_mask.unsqueeze(1).float())
             now_correct_class_num_in_neigh = same_class_number_extractor((now_class_mask*now_pred_class_mask).unsqueeze(1).float())
             # 需要得到 可以参与er loss 计算的像素
@@ -330,29 +337,37 @@ class New_ER5OCRHead(BaseCascadeDecodeHead):
             # 1.邻居中具有同属当前类的像素
             # 2.当前像素要在边界上
             # 如果没有满足这些条件的像素 则直接跳过这个类的计算
+            # get all the pixels for this loss
+            # a pixels should satisfy the following conditions:
+            # 1. some neighbor belongs to the same class with that of itself
+            # 2. the current pixel should be one of the boundary pixel
+            # if a pixel does not meet these conditions at the same time, it will be ignored
             pixel_cal_mask = (now_class_num_in_neigh.squeeze(1)>=1)*(edge_mask.bool()*now_class_mask.bool()).detach()
             pixel_mse_cal_mask = (now_correct_class_num_in_neigh.squeeze(1)>=1)*(edge_mask.bool()*now_class_mask.bool()*now_pred_class_mask.bool()).detach()
             if pixel_cal_mask.sum()<1 or pixel_mse_cal_mask.sum()<1:
                 cal_class_num = cal_class_num - 1
                 continue            
-            # 这里是把邻居特征做平均
             class_forward_feat = now_neighbor_feat/(now_class_num_in_neigh+1e-5)
             class_correct_forward_feat = now_correct_neighbor_feat/(now_correct_class_num_in_neigh+1e-5)
 
             # 选择出参与loss计算的像素的原始特征
+            # get the original feature of those pixel included in the loss calculation
             # origin_pixel_feat = er_input.permute(0,2,3,1)[pixel_cal_mask].permute(1,0).unsqueeze(0).unsqueeze(-1)
             origin_mse_pixel_feat = er_input.permute(0,2,3,1)[pixel_mse_cal_mask].permute(1,0).unsqueeze(0).unsqueeze(-1)
             # 选择出参与loss计算的像素的邻居平均特征
+            # get the avg feature of its neighbors
             neigh_pixel_feat = class_forward_feat.permute(0,2,3,1)[pixel_cal_mask].permute(1,0).unsqueeze(0).unsqueeze(-1)
             neigh_mse_pixel_feat = class_correct_forward_feat.permute(0,2,3,1)[pixel_mse_cal_mask].permute(1,0).unsqueeze(0).unsqueeze(-1)
             # 邻居平均特征也要能够正确分类，且用同样的分类器才行
-            # 这个地方可以试试不detach掉的
+            # make sure this averaged feature should also be correctly classified by the same classifier
             neigh_pixel_feat_prediction = F.conv2d(neigh_pixel_feat, weight=self.conv_seg.weight.to(neigh_pixel_feat.dtype).detach(), bias=self.conv_seg.bias.to(neigh_pixel_feat.dtype).detach())
             # 为邻居平均特征的分类loss产生GT，即当前类中像素的邻居（因为都是同属当前类的邻居）的标签也是当前类
             # 因此乘shown_class[i]
+            # get the ground truth class for the avg feature
             gt_for_neigh_output = shown_class[i]*torch.ones((1,neigh_pixel_feat_prediction.shape[2],1)).to(er_input.device).long()
             neigh_classfication_loss = F.cross_entropy(neigh_pixel_feat_prediction, gt_for_neigh_output)
             # 当前点的像素 要向周围同类像素的平均特征靠近
+            # the feature of the current pixel should be pushed close to the avg feature of its same-class neighbors
             # close2neigh_loss = F.mse_loss(origin_pixel_feat, neigh_pixel_feat.detach())
             neigh_mse_pixel_feat_prediction = F.conv2d(neigh_mse_pixel_feat, weight=self.conv_seg.weight.to(neigh_pixel_feat.dtype).detach(), bias=self.conv_seg.bias.to(neigh_pixel_feat.dtype).detach())
             gt_for_neigh_mse_output = shown_class[i]*torch.ones((1,neigh_mse_pixel_feat_prediction.shape[2],1)).to(er_input.device).long()
