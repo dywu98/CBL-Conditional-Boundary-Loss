@@ -16,7 +16,7 @@ Temporary result table:
 | model             | Backbone  | mIoU(SS) | mIoU(MS)        |
 | -----------       | --------- | -------- | --------        |
 | MaskFormer        | Swin-B    | --       | 53.83(official) |
-| MaskFormer +CBL   | Swin-B    | 53.49    | 54.89           | 
+| MaskFormer +CBL   | Swin-B    | 53.49    | 54.89 [Trained Model Code:CBL0](https://pan.baidu.com/s/1vSP6DYBOs82O490RFQF1GQ?pwd=CBL0)      | 
 | Mask2Former       | Swin-B    | --       | 55.07(official) |
 | Mask2Former +CBL  | Swin-B    | 54.79    | 56.05           | 
 
