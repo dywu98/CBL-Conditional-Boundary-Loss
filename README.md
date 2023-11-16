@@ -1,9 +1,7 @@
 # CBL-Conditional-Boundary-Loss
 The official implementation of the accepted IEEE-TIP paper [Conditional Boundary Loss for Semantic Segmentation](https://ieeexplore.ieee.org/abstract/document/10173725).  
-Please note that right now this project is only the simple one **only including the core code** of our CBL implementation.  
-The whole implementations that are easy to use based on MMsegmentation will be released soon after the accpectance of our paper.   
-However, you can still use our CBL in MMsegmentation following our instructions.  
-Thus, it may seems not convinient to reproduce our method right now. But, you will find it's easy to use CBL and reproduce the results in our paper once the whole MMsegmentation project is uploaded.  
+We provide the code of our CBL based on [our_maskformer](./maskformer/) and MMsegmentation.
+The whole CBL MMsegmentation code base will be uploaded soon. For now, your can use our CBL in MMsegmentation following the instructions down below.
 
 ---
 ## Our Results  
