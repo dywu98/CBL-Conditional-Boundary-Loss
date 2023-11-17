@@ -49,6 +49,8 @@ The class name of the OCRHead with our CBL is `New_ER5OCRHead`.
 
 ## TO-DO List(after accepted)
 1.Upload the whole CBL project based on MMsegmentation (including CBL trained models with PSPNet, DeeplabV3+, Swin-B)  
+
 2.~Upload the whole CBL project based on MaskFormer (including CBL trained models with MaskFormer)~ (Done)
+
 3.Write a new instruction about how to run our CBL on the above-mentioned projects.  
 
