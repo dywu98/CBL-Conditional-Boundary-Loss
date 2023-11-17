@@ -18,13 +18,13 @@ Temporary result table:
 | MaskFormer        | Swin-B    | --       | 53.83(official) |
 | MaskFormer +CBL   | Swin-B    | 53.49    | 54.89 [Trained Model Code:CBL0](https://pan.baidu.com/s/1vSP6DYBOs82O490RFQF1GQ?pwd=CBL0)      | 
 | Mask2Former       | Swin-B    | --       | 55.07(official) |
-| Mask2Former +CBL  | Swin-B    | 54.79    | 56.05           | 
+| Mask2Former +CBL  | Swin-B    | 54.79    | 56.05 [Trained Model Code:CBL0](https://pan.baidu.com/s/1UaHXp_HjAiZ7wB7386a5nA?pwd=CBL0)      | 
 
 ## How to train MaskFormer +CBL model
-We build our implementation based on the official code base of MaskFormer. Please refer to [maskformer](./maskformer/)
+We build our implementation based on the official code base of MaskFormer. Please refer to our MaskFormer code base at [our_maskformer](./maskformer/)
 This implementation enables easy reproduction of our CBL on MaskFormer, **which do not need the above complicated steps for mmsegmentation**.
 The trained MaskFormer+CBL model can also be found at [MaskFormer+CBL Trained Model Code:CBL0](https://pan.baidu.com/s/1vSP6DYBOs82O490RFQF1GQ?pwd=CBL0)
-
+The trained Mask2Foremer+CBL model is also provided at [Mask2Former+CBL Trained Model Code:CBL0](https://pan.baidu.com/s/1UaHXp_HjAiZ7wB7386a5nA?pwd=CBL0)
 ## How to use our code in MMsegmentation
 We follow the implementation of MMsegmentation. Here we provide the code of CBL based on the OCRHead in CBLocr_head.py.  
 The class name of the OCRHead with our CBL is `New_ER5OCRHead`.   
