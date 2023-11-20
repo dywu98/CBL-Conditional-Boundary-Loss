@@ -1,0 +1,4 @@
+# ninja log v5
+0	2993	1672976835343264933	/home/dancer/mask2former/Mask2Former/mask2former/modeling/pixel_decoder/ops/build/temp.linux-x86_64-cpython-38/home/dancer/mask2former/Mask2Former/mask2former/modeling/pixel_decoder/ops/src/cpu/ms_deform_attn_cpu.o	7e2148aa1d3c9205
+0	14923	1672976847263205136	/home/dancer/mask2former/Mask2Former/mask2former/modeling/pixel_decoder/ops/build/temp.linux-x86_64-cpython-38/home/dancer/mask2former/Mask2Former/mask2former/modeling/pixel_decoder/ops/src/vision.o	dbb7dd700b6f766b
+0	29317	1672976852491178884	/home/dancer/mask2former/Mask2Former/mask2former/modeling/pixel_decoder/ops/build/temp.linux-x86_64-cpython-38/home/dancer/mask2former/Mask2Former/mask2former/modeling/pixel_decoder/ops/src/cuda/ms_deform_attn_cuda.o	505f0569f35e4c04
